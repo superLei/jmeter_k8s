@@ -1,4 +1,4 @@
-FROM localhost:5000/jmeter-base:5.6.3
+FROM localhost:5000/jmeter-base:5.6.6
 LABEL maintainer="su"
         
 EXPOSE 60000

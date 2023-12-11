@@ -20,7 +20,7 @@ spec:
           name: influxdb
           volumeMounts:
           - name: config-volume
-            mountPath: /etc/influxdb
+            mountPath: /etc/influxdb2
           ports:
             - containerPort: 8083
               name: influx

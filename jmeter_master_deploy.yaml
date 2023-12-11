@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: jmmaster
-        image: localhost:5000/jmeter-master:5.6.3
+        image: localhost:5000/jmeter-master:5.6.6
         imagePullPolicy: IfNotPresent
         command: [ "/bin/bash", "-c", "--" ]
         args: [ "while true; do sleep 30; done;"]
