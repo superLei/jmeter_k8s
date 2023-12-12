@@ -16,11 +16,10 @@ spec:
     spec:
       containers:
       - name: grafana
-        image: grafana/grafana:10.2.2
+        image: grafana/grafana:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
-          protocol: TCP
         env:
         - name: GF_AUTH_BASIC_ENABLED
           value: "true"
@@ -30,7 +29,25 @@ spec:
           value: "true"
         - name: GF_AUTH_ANONYMOUS_ORG_ROLE
           value: Admin
+        - name: GF_SECURITY_ALLOW_EMBEDDING
+          value: "true"                 # 允许嵌入
         - name: GF_SERVER_ROOT_URL
           # If you're only using the API Server proxy, set this value instead:
           # value: /api/v1/namespaces/kube-system/services/monitoring-grafana/proxy
           value: /
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jmeter-grafana
+  labels:
+    app: jmeter-grafana
+spec:
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  selector:
+    app: jmeter-grafana
+  type: NodePort

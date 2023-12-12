@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: influxdb-jmeter
+  labels:
+    app: influxdb-jmeter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: influxdb-jmeter
+  template:
+    metadata:
+      labels:
+        app: influxdb-jmeter
+    spec:
+      containers:
+        - image: influxdb:latest
+          imagePullPolicy: IfNotPresent
+          name: influxdb
+          ports:
+            - containerPort: 8086
+              name: api
+          env:
+            - name: INFLUXDB_TOKEN
+              value: "test@123"
+            - name: INFLUXDB_ORG
+              value: "jmeter"
+            - name: INFLUXDB_BUCKET
+              value: "jmeter"
+            - name: INFLUXDB_HOSTNAME
+              value: "jmeter-influxdb" # This should be the service name or IP where InfluxDB is accessible
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jmeter-influxdb
+  labels:
+    app: influxdb-jmeter
+spec:
+  ports:
+    - protocol: TCP
+      port: 8086
+      name: api
+      targetPort: 8086
+  selector:
+    app: influxdb-jmeter
+
+  type: ClusterIP
