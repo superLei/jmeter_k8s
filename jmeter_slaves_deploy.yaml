@@ -15,12 +15,15 @@ spec:
         jmeter_mode: slave
     spec:
       containers:
-      - name: jmslave
-        image:  localhost:5000/jmeter-slave:5.6.6
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 1099
-        - containerPort: 50000
+        - name: jmslave
+          image: localhost:5000/jmeter-slave:5.6.6
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: "Asia/Shanghai" # 你想要的时区
+          ports:
+            - containerPort: 1099
+            - containerPort: 50000
 
 ---
 apiVersion: v1

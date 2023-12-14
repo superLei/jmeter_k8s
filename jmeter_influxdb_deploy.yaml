@@ -30,6 +30,8 @@ spec:
               value: "jmeter"
             - name: INFLUXDB_HOSTNAME
               value: "jmeter-influxdb" # This should be the service name or IP where InfluxDB is accessible
+            - name: TZ
+              value: "Asia/Shanghai"  # 你想要的时区
 
 ---
 apiVersion: v1

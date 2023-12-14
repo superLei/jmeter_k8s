@@ -15,18 +15,26 @@ spec:
         jmeter_mode: master
     spec:
       containers:
-      - name: jmmaster
-        image: localhost:5000/jmeter-master:5.6.6
-        imagePullPolicy: IfNotPresent
-        command: [ "/bin/bash", "-c", "--" ]
-        args: [ "while true; do sleep 30; done;"]
-        volumeMounts:
-          - name: loadtest
-            mountPath: /load_test
-            subPath: "load_test"
-        ports:
-        - containerPort: 60000
+        - name: jmmaster
+          image: localhost:5000/jmeter-master:5.6.6
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: "Asia/Shanghai" # 你想要的时区
+          command: ["/bin/bash", "-c", "--"]
+          args: ["while true; do sleep 30; done;"]
+          volumeMounts:
+            - name: loadtest
+              mountPath: /load_test
+              subPath: "load_test"
+            - name: jmeter-report
+              mountPath: /jmeter_report
+          ports:
+            - containerPort: 60000
       volumes:
-      - name: loadtest
-        configMap:
-          name: jmeter-load-test
+        - name: loadtest
+          configMap:
+            name: jmeter-load-test
+        - name: jmeter-report
+          persistentVolumeClaim:
+            claimName: pvc-jmeter-report

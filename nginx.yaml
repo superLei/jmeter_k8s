@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-jmeter
+  labels:
+    app: nginx-jmeter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-jmeter
+  template:
+    metadata:
+      labels:
+        app: nginx-jmeter
+    spec:
+      containers:
+        - image: nginx:latest
+          imagePullPolicy: IfNotPresent
+          name: nginx
+          env:
+            - name: TZ
+              value: "Asia/Shanghai" # 你想要的时区
+          ports:
+            - containerPort: 8012
+          volumeMounts:
+            - name: nginx-report
+              mountPath: /etc/nginx/conf.d
+            - name: jmeter-report
+              mountPath: /jmeter_report
+      volumes:
+        - name: nginx-report
+          configMap:
+            name: nginx-config
+        - name: jmeter-report
+          persistentVolumeClaim:
+            claimName: pvc-jmeter-report
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-jmeter
+  labels:
+    app: nginx-jmeter
+spec:
+  ports:
+    - protocol: TCP
+      port: 8012
+      targetPort: 8012
+  selector:
+    app: nginx-jmeter
+  type: NodePort
