@@ -5,7 +5,7 @@ metadata:
   labels:
     jmeter_mode: slave
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       jmeter_mode: slave
@@ -18,6 +18,13 @@ spec:
         - name: jmslave
           image: localhost:5000/jmeter-slave:5.6.6
           imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: 2Gi
+              cpu: 1000m
+            requests:
+              memory: 800Mi
+              cpu: 100m
           env:
             - name: TZ
               value: "Asia/Shanghai" # 你想要的时区
