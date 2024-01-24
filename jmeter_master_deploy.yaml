@@ -29,6 +29,8 @@ spec:
               subPath: "load_test"
             - name: jmeter-report
               mountPath: /jmeter_report
+            - name: jmeter-jmx
+              mountPath: /jmeter_jmx
           ports:
             - containerPort: 60000
       volumes:
@@ -38,3 +40,6 @@ spec:
         - name: jmeter-report
           persistentVolumeClaim:
             claimName: pvc-jmeter-report
+        - name: jmeter-jmx
+          persistentVolumeClaim:
+            claimName: pvc-jmeter-jmx
