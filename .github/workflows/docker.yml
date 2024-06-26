@@ -6,7 +6,7 @@ on:
       - v*
 
 env:
-  REGISTRY: ghcr.io
+  REGISTRY: docker.pkg.github.com
   IMAGE_NAME: yys172/jmeter-with-influxdb2
 
 jobs:
