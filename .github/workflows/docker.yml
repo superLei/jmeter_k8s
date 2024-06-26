@@ -1,4 +1,4 @@
-name: Build Docker Image
+name: Build Docker Images
 
 on:
   push:
@@ -7,11 +7,13 @@ on:
 
 env:
   REGISTRY: yys172
-  IMAGE_NAME: jmeter-with-influxdb2
+  BASE_IMAGE_NAME: jmeter-with-influxdb2
+  MASTER_IMAGE_NAME: jmeter-with-influxdb2-master
+  SLAVE_IMAGE_NAME: jmeter-with-influxdb2-slave
 
 jobs:
   push_to_registry:
-    name: Push Docker image to Docker Hub
+    name: Push Docker images to Docker Hub
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -34,19 +36,53 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
+      - name: Extract metadata for base image
+        id: base_meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.BASE_IMAGE_NAME }}
 
-      - name: Build and push
-        id: push
+      - name: Build and push base image
+        id: push_base
         uses: docker/build-push-action@v6
         with:
           push: true
           context: .
-          file: ./Dockerfile # 这里指定 Dockerfile 的路径
+          file: ./Dockerfile
           platforms: linux/amd64
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.base_meta.outputs.tags }}
+          labels: ${{ steps.base_meta.outputs.labels }}
+
+      - name: Extract metadata for master image
+        id: master_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.MASTER_IMAGE_NAME }}
+
+      - name: Build and push master image
+        id: push_master
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          context: .
+          file: ./Dockerfile-master
+          platforms: linux/amd64
+          tags: ${{ steps.master_meta.outputs.tags }}
+          labels: ${{ steps.master_meta.outputs.labels }}
+
+      - name: Extract metadata for slave image
+        id: slave_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.SLAVE_IMAGE_NAME }}
+
+      - name: Build and push slave image
+        id: push_slave
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          context: .
+          file: ./Dockerfile-slave
+          platforms: linux/amd64
+          tags: ${{ steps.slave_meta.outputs.tags }}
+          labels: ${{ steps.slave_meta.outputs.labels }}
