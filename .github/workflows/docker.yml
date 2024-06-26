@@ -6,8 +6,8 @@ on:
       - v*
 
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: yys172/jmeter-with-influxdb2
+  REGISTRY: yys172
+  IMAGE_NAME: jmeter-with-influxdb2
 
 jobs:
   push_to_registry:
