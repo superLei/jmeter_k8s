@@ -1,26 +1,23 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: pv-jmeter-report
+  name: pv-jmeter-jmx
 spec:
   capacity:
-    storage: 2Gi
+    storage: 1Gi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Recycle
   storageClassName: slow
-  mountOptions:
-    - hard
-    - nfsvers=4.1
   nfs:
-    path: /jmeter_report
+    path: /jmeter_jmx
     server: 10.111.7.73
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-jmeter-report
+  name: pvc-jmeter-jmx
 spec:
   accessModes:
     - ReadWriteMany

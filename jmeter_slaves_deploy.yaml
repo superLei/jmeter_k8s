@@ -5,7 +5,7 @@ metadata:
   labels:
     jmeter_mode: slave
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       jmeter_mode: slave
@@ -16,14 +16,17 @@ spec:
     spec:
       containers:
         - name: jmslave
-          image: localhost:5000/jmeter-slave:5.6.6
+          image: yys172/jmeter-with-influxdb2-slave:latest
           imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: jmeter-jmx
+              mountPath: /jmeter_jmx
           resources:
             limits:
-              memory: 2Gi
-              cpu: 1000m
+              memory: 8Gi
+              cpu: 4000m
             requests:
-              memory: 800Mi
+              memory: 1000Mi
               cpu: 100m
           env:
             - name: TZ
@@ -31,7 +34,10 @@ spec:
           ports:
             - containerPort: 1099
             - containerPort: 50000
-
+      volumes:
+        - name: jmeter-jmx
+          persistentVolumeClaim:
+            claimName: pvc-jmeter-jmx
 ---
 apiVersion: v1
 kind: Service

@@ -47,7 +47,8 @@ metadata:
     app: jmeter-grafana
 spec:
   ports:
-    - protocol: TCP
+    - name: grafana-port
+      protocol: TCP
       port: 3000
       targetPort: 3000
   selector:

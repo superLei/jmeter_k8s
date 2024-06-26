@@ -9,10 +9,10 @@ data:
     #!/bin/bash
     #Script created to invoke jmeter test script with the slave POD IP addresses
     #Script should be run like: ./load_test "path to the test script in jmx format"
-    current_time=$(date +"%Y%m%d%H%M%S")
-    jtl=$current_time.jtl
-    report_name=report$current_time
-    nginx_svc_ip=`getent ahostsv4 nginx-jmeter | cut -d' ' -f1 | sort -u | awk -v ORS=, '{print $1}' | sed 's/,$//'`
-    /jmeter/apache-jmeter-*/bin/jmeter -n -t $1 -Dserver.rmi.ssl.disable=true -R `getent ahostsv4 jmeter-slaves-svc | cut -d' ' -f1 | sort -u | awk -v ORS=, '{print $1}' | sed 's/,$//'` -l /jmeter_report/$jtl -e -o /jmeter_report/$report_name
+    jmx_path=$1
+    nginx_svc_ip=$2
+    jtl=$3.jtl
+    report_name=$3
+    /jmeter/apache-jmeter-*/bin/jmeter -n -t $jmx_path -Dserver.rmi.ssl.disable=true -R $(getent ahostsv4 jmeter-slaves-svc | cut -d' ' -f1 | sort -u | awk -v ORS=, '{print $1}' | sed 's/,$//') -l /jmeter_report/$jtl -e -o /jmeter_report/$report_name
     echo "Test result report url:"
     echo "http://${nginx_svc_ip}:8012/jmeter_report/${report_name}/index.html"

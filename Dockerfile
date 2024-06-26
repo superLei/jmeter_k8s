@@ -8,6 +8,9 @@ RUN apt-get clean && \
     apt-get -qy install \
         wget \
         telnet \
+        vim \
+        net-tools \
+        htop \
         iputils-ping \
         unzip
 RUN mkdir /jmeter && \
