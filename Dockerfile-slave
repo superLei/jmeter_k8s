@@ -1,4 +1,4 @@
-FROM yys172/jmeter-with-influxdb2:5.6.3
+FROM yys172/jmeter-with-influxdb2:5.6.31
 LABEL maintainer="su"
 
 EXPOSE 1099 50000

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: jmmaster
-          image: yys172/jmeter-with-influxdb2-master:5.6.3
+          image: yys172/jmeter-with-influxdb2-master:latest
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
