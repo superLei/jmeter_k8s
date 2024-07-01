@@ -7,12 +7,34 @@ metadata:
 data:
   load_test: |
     #!/bin/bash
-    #Script created to invoke jmeter test script with the slave POD IP addresses
-    #Script should be run like: ./load_test "path to the test script in jmx format"
+    # Script created to invoke JMeter test script with the slave POD IP addresses
+    # Script should be run like: ./load_test "path to the test script in jmx 
+
+    # Get input parameters
     jmx_path=$1
-    nginx_svc_ip=$2
-    jtl=$3.jtl
-    report_name=$3
-    /jmeter/apache-jmeter-*/bin/jmeter -n -t $jmx_path -Dserver.rmi.ssl.disable=true -R $(getent ahostsv4 jmeter-slaves-svc | cut -d' ' -f1 | sort -u | awk -v ORS=, '{print $1}' | sed 's/,$//') -l /jmeter_report/$jtl -e -o /jmeter_report/$report_name
-    echo "Test result report url:"
-    echo "http://${nginx_svc_ip}:8012/jmeter_report/${report_name}/index.html"
+    jtl=$2.jtl
+    report_name=$2
+    timeout_duration=$3  # Timeout duration in seconds
+
+    # Get the IP addresses of JMeter slaves
+    slave_ips=$(getent ahostsv4 jmeter-slaves-svc | cut -d' ' -f1 | sort -u | awk -v ORS=, '{print $1}' | sed 's/,$//')
+
+    # Check if slave_ips is empty
+    if [ -z "$slave_ips" ]; then
+      echo "Error: No JMeter slave IPs found."
+      exit 1
+    fi
+
+    # Run the JMeter test with a timeout
+    timeout $timeout_duration /jmeter/apache-jmeter-*/bin/jmeter -n -t $jmx_path -Dserver.rmi.ssl.disable=true -R $slave_ips -l /jmeter_report/$jtl -e -o /jmeter_report/$report_name
+
+    # Check the exit status of JMeter
+    jmeter_exit_status=$?
+
+    if [ $jmeter_exit_status -eq 0 ]; then
+      echo "JMeter test completed successfully."
+    elif [ $jmeter_exit_status -eq 124 ]; then
+      echo "Error: JMeter test timed out after $timeout_duration seconds."
+    else
+      echo "Error: JMeter test failed with exit status $jmeter_exit_status."
+    fi

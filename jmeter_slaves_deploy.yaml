@@ -26,8 +26,8 @@ spec:
               memory: 8Gi
               cpu: 4000m
             requests:
-              memory: 1000Mi
-              cpu: 100m
+              memory: 4000Mi
+              cpu: 1000m
           env:
             - name: TZ
               value: "Asia/Shanghai" # 你想要的时区
